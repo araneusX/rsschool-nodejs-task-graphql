@@ -3,9 +3,12 @@ import { createGqlResponseSchema, gqlResponseSchema, gqlSchema } from './schemas
 import { graphql, parse, validate } from 'graphql';
 import depthLimit from 'graphql-depth-limit';
 import { useDataLoader } from './utils.js';
+import { DataLoaders } from './types/definitions.js';
 
 const plugin: FastifyPluginAsyncTypebox = async (fastify) => {
   const { prisma } = fastify;
+
+  const dataLoaders: DataLoaders = new WeakMap();
 
   fastify.route({
     url: '/',
@@ -32,6 +35,7 @@ const plugin: FastifyPluginAsyncTypebox = async (fastify) => {
         contextValue: {
           prisma,
           useDataLoader,
+          dataLoaders,
         },
       });
     },

@@ -5,5 +5,5 @@ export const memberType: FieldConfig = {
 };
 
 export const memberTypes: FieldConfig = {
-
+  resolve: ()
 };
