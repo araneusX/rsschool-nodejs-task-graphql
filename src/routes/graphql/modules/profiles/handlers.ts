@@ -19,6 +19,20 @@ export const handler = {
 
     return profile;
   },
+  
+  async getByIds(prisma: PrismaClient, ids: User['id'][]) {
+    const profiles: Profile[] = await prisma.profile.findMany({
+      where: {
+        userId: {
+          in: ids,
+        },
+      },
+    });
+
+    const result = ids.map((userId) => profiles.find(({id}) => id === userId));
+
+    return result;
+  },
 
   async getByUserId(prisma: PrismaClient, userId: User['id']) {
     const profile = await prisma.profile.findUnique({
