@@ -1,5 +1,4 @@
 import { PrismaClient, Profile, User } from "@prisma/client"
-import { Errors } from "../../types/constants.js";
 
 export const handler = {
   async getAll(prisma: PrismaClient) {
@@ -12,10 +11,6 @@ export const handler = {
         id,
       },
     });
-
-    if (profile === null) {
-      throw new Error(Errors.NotFound);
-    }
 
     return profile;
   },
@@ -40,9 +35,7 @@ export const handler = {
         userId,
       },
     });
-    if (profile === null) {
-      throw new Error(Errors.NotFound);
-    }
+
     return profile;
   },
 

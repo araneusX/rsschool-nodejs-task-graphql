@@ -1,5 +1,4 @@
 import { Post, User, PrismaClient } from "@prisma/client"
-import { Errors } from "../../types/constants.js";
 
 export const handler = {
   async getAll(prisma: PrismaClient) {
@@ -12,10 +11,6 @@ export const handler = {
         id,
       },
     });
-
-    if (post === null) {
-      throw new Error(Errors.NotFound);
-    }
 
     return post;
   },

@@ -9,6 +9,6 @@ export type Context = {
   dataLoaders: DataLoaders;
 }
 
-export type DataLoaders = WeakMap<ReadonlyArray<FieldNode>, DataLoader<unknown, unknown>>;
+export type DataLoaders = WeakMap<ReadonlyArray<FieldNode>, Record<string, DataLoader<unknown, unknown>>>;
 
-export type FieldConfig<TArgs = never> = GraphQLFieldConfig<string, Context, TArgs>;
+export type FieldConfig<TSource, TArgs = never> = GraphQLFieldConfig<TSource, Context, TArgs>;

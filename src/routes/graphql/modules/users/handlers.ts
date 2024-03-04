@@ -1,9 +1,13 @@
 import { PrismaClient, User } from "@prisma/client"
-import { Errors } from "../../types/constants.js";
 
 export const handler = {
-  async getAll(prisma: PrismaClient) {
-    return prisma.user.findMany();
+  async getAll(prisma: PrismaClient, include?: {
+    subscribedToUser: boolean,
+    userSubscribedTo: boolean,
+  }) {
+    return prisma.user.findMany({
+      include
+    });
   },
 
   async getById(prisma: PrismaClient, id: User['id']) {
@@ -12,10 +16,6 @@ export const handler = {
         id,
       },
     });
-
-    if (user === null) {
-      throw new Error(Errors.NotFound);
-    }
 
     return user;
   },
