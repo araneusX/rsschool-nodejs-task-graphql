@@ -23,6 +23,18 @@ export const handler = {
     });
   },
 
+  getByUserIds: async (prisma: PrismaClient, ids: User['id'][]) => {
+    const posts = await prisma.post.findMany({
+      where: {
+        authorId: {
+          in: ids,
+        },
+      },
+    });
+
+    return ids.map((userId) => posts.filter(({ authorId }) => userId === authorId));
+  },
+
   create(prisma: PrismaClient, post: Omit<Post, 'id'>) {
     return prisma.post.create({
       data: post,

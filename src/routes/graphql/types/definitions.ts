@@ -1,14 +1,17 @@
 import { PrismaClient } from "@prisma/client"
-import { useDataLoader } from "../utils.js"
-import { FieldNode, GraphQLFieldConfig } from "graphql";
+import { GraphQLFieldConfig } from "graphql";
 import DataLoader from "dataloader";
 
 export type Context = {
   prisma: PrismaClient;
-  useDataLoader: typeof useDataLoader;
-  dataLoaders: DataLoaders;
+  dataLoader: {
+    users: DataLoader<unknown, unknown>,
+    profiles: DataLoader<unknown, unknown>,
+    usersPosts:  DataLoader<unknown, unknown>,
+    memberTypes: DataLoader<unknown, unknown>,
+    subscribedTo: DataLoader<unknown, unknown>,
+    subscribedBy: DataLoader<unknown, unknown>,
+  };
 }
-
-export type DataLoaders = WeakMap<ReadonlyArray<FieldNode>, Record<string, DataLoader<unknown, unknown>>>;
 
 export type FieldConfig<TSource, TArgs = never> = GraphQLFieldConfig<TSource, Context, TArgs>;

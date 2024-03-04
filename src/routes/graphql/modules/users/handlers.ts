@@ -20,28 +20,54 @@ export const handler = {
     return user;
   },
 
-  getSubscribedBy(prisma: PrismaClient, userId: User['id']) {
-    return prisma.user.findMany({
+  getByIds: async  (prisma: PrismaClient, ids: User['id'][]) => {
+    const users = await prisma.user.findMany({
+      where: {
+        id: {
+          in: ids,
+        },
+      },
+    });
+
+    return users;
+  },
+
+  getSubscribedToUsers: async (prisma: PrismaClient, userIds: User['id'][]) => {
+    const subscribers = await prisma.user.findMany({
       where: {
         userSubscribedTo: {
           some: {
-            authorId: userId,
+            authorId: {
+              in: userIds
+            },
           },
         },
       },
+      include: {
+        userSubscribedTo: true,
+      }
     });
+
+    return userIds.map((userId) => subscribers.filter(({ userSubscribedTo }) => userSubscribedTo.some(({ authorId }) => userId === authorId)));
   },
 
-  getSubscribedTo(prisma: PrismaClient, userId: User['id']) {
-    return prisma.user.findMany({
+  getUsersSubscribedTo: async (prisma: PrismaClient, userIds: User['id'][]) => {
+    const subscribers = await prisma.user.findMany({
       where: {
         subscribedToUser: {
           some: {
-            subscriberId: userId,
+            subscriberId: {
+              in: userIds
+            },
           },
         },
       },
+      include: {
+        subscribedToUser: true,
+      }
     });
+
+    return userIds.map((userId) => subscribers.filter(({ subscribedToUser }) => subscribedToUser.some(({ subscriberId }) => userId === subscriberId)));
   },
 
   create(prisma: PrismaClient, user: Omit<User, 'id'>) {

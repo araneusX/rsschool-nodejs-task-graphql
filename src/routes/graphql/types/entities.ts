@@ -3,11 +3,6 @@ import { UUIDType } from "./uuid.js";
 import { GqlMemberTypeId } from "./MemberTypeId.js";
 import { MemberType as Member, Post, Profile, User } from "@prisma/client";
 import { Context } from "./definitions.js";
-import { handler as profilesHandler } from "../modules/profiles/handlers.js";
-import { handler as memberTypesHandler } from "../modules/memberTypes/handler.js";
-import { handler as usersHandler } from "../modules/users/handlers.js";
-import { handler as postsHandler } from "../modules/posts/handlers.js";
-
 
 export const MemberTypeType = new GraphQLObjectType<Member, Context>({
   name: 'MemberType',
@@ -20,12 +15,12 @@ export const MemberTypeType = new GraphQLObjectType<Member, Context>({
 
 export const PostType = new GraphQLObjectType<Post, Context>({
   name: 'PostType',
-  fields: () => ({
+  fields: {
     id: { type: UUIDType },
     title: { type: GraphQLString },
     authorId: { type: UUIDType },
     content: { type: GraphQLString },
-  }),
+  },
 });
 
 export const ProfileType = new GraphQLObjectType<Profile, Context>({
@@ -38,14 +33,14 @@ export const ProfileType = new GraphQLObjectType<Profile, Context>({
     memberTypeId: { type: GqlMemberTypeId },
     user: {
       type: UserType,
-      resolve: async (source, _, { prisma }) => {
-        return usersHandler.getById(prisma, source.userId);
+      resolve: async (source, _, { dataLoader }) => {
+        return dataLoader.users.load(source.userId);
       },
     },
     memberType: {
       type: MemberTypeType,
-      resolve: async (source, _, { prisma }) => {
-        return memberTypesHandler.getById(prisma, source.memberTypeId);
+      resolve: async (source, _, { dataLoader }) => {
+        return dataLoader.memberTypes.load(source.memberTypeId);
       },
     }
   }),
@@ -60,15 +55,15 @@ export const UserType: GraphQLObjectType = new GraphQLObjectType<User, Context>(
 
     profile: {
       type: ProfileType,
-      resolve: async (source, _, { prisma }) => {
-        return profilesHandler.getByUserId(prisma, source.id);
+      resolve: async (source, _, { dataLoader }) => {
+        return dataLoader.profiles.load(source.id);
       },
     },
 
     posts: {
       type: new GraphQLList(PostType),
-      resolve: async ({ id }, _, { prisma }) => {
-        return postsHandler.getByUserId(prisma, id);
+      resolve: async ({ id }, _, { dataLoader }) => {
+        return dataLoader.usersPosts.load(id);
       },
     },
 
@@ -77,16 +72,16 @@ export const UserType: GraphQLObjectType = new GraphQLObjectType<User, Context>(
       resolve: async (
         { id },
         _,
-        { prisma },
+        { dataLoader },
       ) => {
-        return usersHandler.getSubscribedTo(prisma, id);
+        return dataLoader.subscribedTo.load(id);
       },
     },
 
     subscribedToUser: {
       type: new GraphQLList(UserType),
-      resolve: async ({ id }, _, { prisma }) => {
-        return usersHandler.getSubscribedBy(prisma, id);
+      resolve: async ({ id }, _, { dataLoader }) => {
+        return dataLoader.subscribedBy.load(id);
       },
     },
   }),

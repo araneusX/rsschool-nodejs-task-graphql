@@ -5,7 +5,7 @@ export const handler = {
     return prisma.profile.findMany();
   },
 
-  async getById(prisma: PrismaClient, id: string) {
+  async getById(prisma: PrismaClient, id: Profile['id']) {
     const profile = await prisma.profile.findUnique({
       where: {
         id,
@@ -15,18 +15,17 @@ export const handler = {
     return profile;
   },
   
-  async getByIds(prisma: PrismaClient, ids: User['id'][]) {
+  getByUserIds: async (prisma: PrismaClient, userIds: User['id'][]) => {
     const profiles: Profile[] = await prisma.profile.findMany({
       where: {
         userId: {
-          in: ids,
+          in: userIds,
         },
       },
     });
 
-    const result = ids.map((userId) => profiles.find(({id}) => id === userId));
-
-    return result;
+    return profiles;
+    //userIds.map((id) => profiles.find(({userId}) => userId === id) ?? null);
   },
 
   async getByUserId(prisma: PrismaClient, userId: User['id']) {
