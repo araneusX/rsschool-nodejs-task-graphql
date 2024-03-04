@@ -24,5 +24,5 @@ export const createGqlResponseSchema = {
 
 export const gqlSchema = new GraphQLSchema({
   query: Query,
-  // mutation: Mutation
+  mutation: Mutation
 });

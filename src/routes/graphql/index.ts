@@ -22,6 +22,9 @@ const plugin: FastifyPluginAsyncTypebox = async (fastify) => {
     async handler(req) {
       const { query, variables } = req.body;
 
+      console.log({ query, variables });
+      
+
       const errors = validate(gqlSchema, parse(query), [depthLimit(5)]);
 
       if (errors.length) {
