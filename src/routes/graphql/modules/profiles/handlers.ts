@@ -25,7 +25,6 @@ export const handler = {
     });
 
     return profiles;
-    //userIds.map((id) => profiles.find(({userId}) => userId === id) ?? null);
   },
 
   async getByUserId(prisma: PrismaClient, userId: User['id']) {

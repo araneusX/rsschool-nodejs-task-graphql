@@ -33,4 +33,5 @@ export const createDataLoader = <TDataItem>(prisma: PrismaClient,
   return new DataLoader(loaderFn);
 }
 
-export const createField = <TSource, TArgs = never>(config: GraphQLFieldConfig<TSource, Context, TArgs>) => config as GraphQLFieldConfig<unknown, unknown>;
+export const createField = 
+  <TSource, TArgs = never>(config: GraphQLFieldConfig<TSource, Context, TArgs>) => config as GraphQLFieldConfig<unknown, unknown>;

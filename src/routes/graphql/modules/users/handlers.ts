@@ -5,9 +5,15 @@ export const handler = {
     subscribedToUser: boolean,
     userSubscribedTo: boolean,
   }) {
-    return prisma.user.findMany({
-      include
-    });
+    const args = {
+      include: {
+        subscribedToUser: !!include?.subscribedToUser,
+        userSubscribedTo: !!include?.userSubscribedTo,    
+      }
+    }
+    const users = await prisma.user.findMany(args);
+
+    return users as (Partial<(typeof users)[number]> & User)[]
   },
 
   async getById(prisma: PrismaClient, id: User['id']) {
@@ -48,7 +54,10 @@ export const handler = {
       }
     });
 
-    return userIds.map((userId) => subscribers.filter(({ userSubscribedTo }) => userSubscribedTo.some(({ authorId }) => userId === authorId)));
+    return userIds.map((userId) => subscribers
+      .filter(({ userSubscribedTo }) => userSubscribedTo
+      .some(({ authorId }) => userId === authorId))
+    );
   },
 
   getUsersSubscribedTo: async (prisma: PrismaClient, userIds: User['id'][]) => {
@@ -67,7 +76,10 @@ export const handler = {
       }
     });
 
-    return userIds.map((userId) => subscribers.filter(({ subscribedToUser }) => subscribedToUser.some(({ subscriberId }) => userId === subscriberId)));
+    return userIds.map((userId) => subscribers
+      .filter(({ subscribedToUser }) => subscribedToUser
+      .some(({ subscriberId }) => userId === subscriberId))
+    );
   },
 
   create(prisma: PrismaClient, user: Omit<User, 'id'>) {
