@@ -23,7 +23,7 @@ export const changePost = createField<Post, { id: string, dto: Partial<Post> }>(
   resolve: (_, { id, dto }, { prisma }) => handler.change(prisma, id, dto),
 });
 
-export const deletePost = createField<Post, { id: string }>({
+export const deletePost = createField<boolean, { id: string }>({
   type: GraphQLBoolean,
   args: {
     id: { type: new GraphQLNonNull(UUIDType) },

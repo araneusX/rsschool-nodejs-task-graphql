@@ -23,7 +23,7 @@ export const changeProfile = createField<Profile, { id: string, dto: Partial<Pro
   resolve: (_, { id, dto }, { prisma }) => handler.change(prisma, id, dto),
 });
 
-export const deleteProfile = createField<Profile, { id: string }>({
+export const deleteProfile = createField<boolean, { id: string }>({
   type: GraphQLBoolean,  
   args: {
     id: { type: new GraphQLNonNull(UUIDType) },

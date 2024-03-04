@@ -37,10 +37,16 @@ export const handler = {
   },
 
   async delete(prisma: PrismaClient, id: Post['id']) {
-    await prisma.post.delete({
-      where: {
-        id,
-      },
-    });
+    try {
+      await prisma.post.delete({
+        where: {
+          id,
+        },
+      });
+
+      return true;
+    } catch {
+      return false;
+    }
   }
 };

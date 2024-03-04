@@ -23,10 +23,28 @@ export const changeUser = createField<User, { id: string, dto: Partial<User> }>(
   resolve: (_, { id, dto }, { prisma }) => handler.change(prisma, id, dto),
 });
 
-export const deleteUser = createField<User, { id: string }>({
+export const deleteUser = createField<boolean, { id: string }>({
   type: GraphQLBoolean,
   args: {
     id: { type: new GraphQLNonNull(UUIDType) },
   },
   resolve: (_, { id }, { prisma }) => handler.delete(prisma, id),
+});
+
+export const subscribeTo  =  createField<unknown, { userId: string, authorId: string }>({
+  type: UserType,
+  args: {
+    userId: { type: new GraphQLNonNull(UUIDType) },
+    authorId: { type: new GraphQLNonNull(UUIDType) },
+  },
+  resolve: (_, { userId, authorId }, { prisma }) => handler.subscribeTo(prisma, userId, authorId),
+});
+
+export const unsubscribeFrom = createField<boolean, { userId: string, authorId: string }>({
+  type: GraphQLBoolean,
+  args: {
+    userId: { type: new GraphQLNonNull(UUIDType) },
+    authorId: { type: new GraphQLNonNull(UUIDType) },
+  },
+  resolve: (_, { userId, authorId }, { prisma }) => handler.unsubscribeFrom(prisma, userId, authorId),
 });

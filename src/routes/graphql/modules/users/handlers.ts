@@ -58,11 +58,17 @@ export const handler = {
   },
 
   async delete(prisma: PrismaClient, id: User['id']) {
-    await prisma.user.delete({
-      where: {
-        id,
-      },
-    });
+    try {
+      await prisma.user.delete({
+        where: {
+          id,
+        },
+      });
+      
+      return true;
+    } catch {
+      return false;
+    }
   },
 
   subscribeTo(prisma: PrismaClient, userId: User['id'], authorId: User['id']) {
@@ -81,13 +87,19 @@ export const handler = {
   },
 
   async unsubscribeFrom(prisma: PrismaClient, userId: User['id'], authorId: User['id']) {
-    await prisma.subscribersOnAuthors.delete({
-      where: {
-        subscriberId_authorId: {
-          subscriberId: userId,
-          authorId,
+    try {
+      await prisma.subscribersOnAuthors.delete({
+        where: {
+          subscriberId_authorId: {
+            subscriberId: userId,
+            authorId,
+          },
         },
-      },
-    });
+      });
+        
+      return true;
+    } catch {
+      return false;
+    } 
   },
 };
